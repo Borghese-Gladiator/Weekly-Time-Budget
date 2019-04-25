@@ -1,0 +1,135 @@
+<!doctype html>
+<html>
+  <head>
+    <title>unpkg-demos :: global-react</title>
+  </head>
+  <body>
+    <div id="app"></div>
+    <div id="app2"></div>
+
+    <script src="https://unpkg.com/react@16.0.0-beta.2/umd/react.production.min.js"
+      integrity="sha384-lJJbYsDe7wDuOttI/MIHfj68o3fVZOhJDxEn0cTPbDq5mkzjF1p+AFEp3r/HpUnt"
+      crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/react-dom@16.0.0-beta.2/umd/react-dom.production.min.js"
+      integrity="sha384-urrH8a5NtX87DSmFO4pKPICl5RHszNM6yx75JIYhynT2ukWDK4skf0YAh4EDEdD2"
+      crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/babel-standalone@6.24.2/babel.min.js"
+      charset="utf-8"></script>
+    <!-- CSS -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/react-table@latest/react-table.css"
+    />
+    
+    <!-- JS -->
+    <script src="https://unpkg.com/react-table@latest/react-table.js"></script>
+    <script src="https://unpkg.com/react-table@latest/react-table.min.js"></script>
+    
+    <script src="https://unpkg.com/react/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/prop-types/prop-types.min.js"></script>
+    <script src="https://unpkg.com/recharts/umd/Recharts.min.js"></script>
+
+    <script>
+      var ReactTable = window.ReactTable.default
+      var LineChart = window.Recharts.LineChart;
+      var Line = window.Recharts.Line;
+      var CartesianGrid = window.Recharts.CartesianGrid;
+      var XAxis = window.Recharts.XAxis;
+      var YAxis = window.Recharts.YAxis;
+      var Tooltip = window.Recharts.Tooltip;
+    </script> 
+    <script type="text/babel">
+      class MyApp extends React.Component {
+        constructor(props) {
+          super(props);
+          this.state = { 
+            items: [],
+            data : [{
+              task: 'Tanner Linsley',
+              hours: 26
+            },{
+              task: 'Tanner Linsley',
+              hours: 26
+            }],
+            columns : [{
+              Header: 'Task',
+              accessor: 'task' // String-based value accessors!
+            }, {
+              Header: 'Hours',
+              accessor: 'hours',
+              Cell: props => <span className='number'>{props.value}</span> // Custom cell components!
+            }], 
+            data2: [{name: 'Page A', uv: 400, pv: 2400, amt: 2400},
+                {name: 'Page B', uv: 100, pv: 2400, amt: 2400} ],
+            myPoints: 0
+          };
+          this.handleChange = this.handleChange.bind(this);
+          this.handleSubmit = this.handleSubmit.bind(this);
+        }
+        handleChange(e) {
+          this.setState({ text: e.target.value });
+        }
+
+        handleSubmit(e) {
+          e.preventDefault();
+          if (!this.state.text.length) {
+            return;
+          }
+          const newItem = {
+            task: this.state.text,
+            id: Date.now(),
+            hours: this.state.myPoints
+          };
+          this.setState(state => ({
+            items: state.items.concat(newItem),
+            text: '',
+            data: state.data.concat(newItem)
+          }));
+          console.log(this.state.data);
+        }
+        render() {
+          return (
+            <div className="blah">
+              <ReactTable
+                page={0} // the index of the page you wish to display
+                pageSize={5} // the number of rows per page to be displayed
+                data={this.state.data}
+                columns={this.state.columns}
+              />
+              <LineChart width={600} height={300} data={this.state.data2} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
+                <Line type="monotone" dataKey="uv" stroke="#8884d8" />
+                <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+              </LineChart>
+              <form onSubmit={this.handleSubmit}>
+                <label htmlFor="new-todo">
+                  What needs to be done?
+                </label>
+                <input
+                  id="new-todo"
+                  onChange={this.handleChange}
+                  value={this.state.text}
+                />
+                <button>
+                  Add #{this.state.items.length + 1}
+                </button>
+              </form>
+            </div>
+          );
+        }
+      }
+      
+      ReactDOM.render(
+        <MyApp/>,
+        document.getElementById('app')
+      );
+    </script>
+  </body>
+
+</html>
+          
+
+        
